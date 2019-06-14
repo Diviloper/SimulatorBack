@@ -11,3 +11,19 @@ services:
       POSTGRES_PASSWORD: 123
     ports:
       - "5432:5432"
+
+  api_migrate:
+    build: .
+    image: api
+    command: python manage.py migrate --settings=SIM.docker
+    depends_on:
+      - db
+
+  api:
+      image: api
+      command: python manage.py runserver 0.0.0.0:8000 --settings=SIM.docker
+      ports:
+        - "8000:8000"
+      depends_on:
+        - db
+        - api_migrate
