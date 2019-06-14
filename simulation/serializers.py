@@ -12,4 +12,4 @@ class SimulationModelInputSerializer(serializers.ModelSerializer):
 class SimulationModelResultsSerializer(serializers.ModelSerializer):
     class Meta:
         model = SimulationModel
-        fields = ('mean_time', 'percent_trucks_in', 'max_time_in_queue', 'n_trucks_in_queue')
+        fields = ('mean_time', 'percent_trucks_in_queue', 'max_time_in_queue', 'n_trucks_in_queue')

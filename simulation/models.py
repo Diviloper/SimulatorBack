@@ -1,4 +1,3 @@
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
@@ -13,7 +12,7 @@ class SimulationModel(models.Model):
     beta_A = models.DecimalField(max_digits=7, decimal_places=5)
     n_cranes = models.IntegerField()
     max_time = models.IntegerField()
-    mean_time = models.DecimalField(max_digits=7, decimal_places=5)
-    percent_trucks_in_queue = models.DecimalField(max_digits=7, decimal_places=5)
-    max_time_in_queue = models.IntegerField()
-    n_trucks_in_queue = ArrayField(ArrayField(models.IntegerField()))
+    mean_time = models.DecimalField(max_digits=100, decimal_places=5, null=True, blank=True, default=0)
+    percent_trucks_in_queue = models.DecimalField(max_digits=100, decimal_places=5, null=True, blank=True, default=0)
+    max_time_in_queue = models.IntegerField(null=True, blank=True, default=0)
+    n_trucks_in_queue = models.TextField()

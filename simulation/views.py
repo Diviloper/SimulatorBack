@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 
 from simulation.models import SimulationModel
 from simulation.serializers import SimulationModelInputSerializer, SimulationModelResultsSerializer
-#from simulator.exemple_queueing import Simulator
+from simulator.exemple_queueing import Simulator
 
 
 class SimulationsView(APIView):
@@ -14,8 +14,8 @@ class SimulationsView(APIView):
         serializer = SimulationModelInputSerializer(data=request.data)
         serializer.is_valid()
         simulation = serializer.save()
-       # simulator = Simulator(simulation)
-        #simulator.simulate()
+        simulator = Simulator(simulation)
+        simulator.simulate()
 
         return Response(data=simulation.id, status=status.HTTP_201_CREATED)
 

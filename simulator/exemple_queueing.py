@@ -1,6 +1,7 @@
+import json
 import queue
+from decimal import Decimal
 
-from simulation.models import SimulationModel
 from simulator.crane import Crane
 from simulator.event import *
 
@@ -45,10 +46,10 @@ class Simulator:
             for j in range(24 * 60):
                 total_trucks_in_queue[0][j] += queue_matrix[i][j]
 
-        self.simulation.mean_time = sum(self.waited_time_for_truck) / len(self.waited_time_for_truck)
+        self.simulation.mean_time = Decimal(sum(self.waited_time_for_truck) / len(self.waited_time_for_truck))
         self.simulation.percent_trucks_in_queue = len(self.waited_time_for_truck) // self.truck_counter
-        self.simulation.max_time_in_queue = max(self.waited_time_for_truck)
-        #self.simulation.n_trucks_in_queue = queue_matrix
+        self.simulation.max_time_in_queue = Decimal(max(self.waited_time_for_truck))
+        self.simulation.n_trucks_in_queue = json.dumps(queue_matrix.tolist())
         self.simulation.save()
 
         np.savetxt('Queues.csv', queue_matrix, delimiter=';', fmt='%i')

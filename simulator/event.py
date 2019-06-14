@@ -29,8 +29,8 @@ class Arrival(Event):
 
     def __init__(self, truck, simulator):
         super().__init__(truck, simulator)
-        self.alpha = self.simulator.simulation.alpha_A
-        self.beta = self.simulator.simulation.beta_A
+        self.alpha = float(self.simulator.simulation.alpha_A)
+        self.beta = float(self.simulator.simulation.beta_A)
 
     def generate_next(self, current_time):
         return [Arrival.generate(current_time, Truck(self.truck.id + 1), self.simulator),
@@ -50,8 +50,8 @@ class PreGate(Event):
 
     def __init__(self, truck, simulator):
         super().__init__(truck, simulator)
-        self.mean = self.simulator.simulation.mean_PG
-        self.sigma = self.simulator.simulation.sigma_PG
+        self.mean = float(self.simulator.simulation.mean_PG)
+        self.sigma = float(self.simulator.simulation.sigma_PG)
 
     def generate_next(self, current_time):
         return [MainGate.generate(current_time, self.truck, self.simulator)]
@@ -69,8 +69,8 @@ class MainGate(Event):
 
     def __init__(self, truck, simulator):
         super().__init__(truck, simulator)
-        self.mean = self.simulator.simulation.mean_MG
-        self.sigma = self.simulator.simulation.sigma_MG
+        self.mean = float(self.simulator.simulation.mean_MG)
+        self.sigma = float(self.simulator.simulation.sigma_MG)
 
     def generate_next(self, current_time):
         if self.assign_crane(current_time):
@@ -96,8 +96,8 @@ class Departure(Event):
 
     def __init__(self, truck, simulator):
         super().__init__(truck, simulator)
-        self.mean = self.simulator.simulation.mean_S
-        self.sigma = self.simulator.simulation.sigma_S
+        self.mean = float(self.simulator.simulation.mean_S)
+        self.sigma = float(self.simulator.simulation.sigma_S)
 
     def generate_next(self, current_time):
         next_truck = self.simulator.cranes[self.truck.crane].finished(current_time, self.simulator)
