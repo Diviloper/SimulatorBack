@@ -26,9 +26,9 @@ class Simulator:
             for event in current_event[1].generate_next(current_time):
                 cua.put(event)
             print(current_event)
-        queue_matrix = np.zeros((24, 24 * 60), dtype=np.int)
+        queue_matrix = np.zeros((self.simulation.n_cranes, 24 * 60), dtype=np.int)
         total_trucks_in_queue = np.zeros((1, 24 * 60), dtype=np.int)
-        for index in range(24):
+        for index in range(self.simulation.n_cranes):
             previous_event_time = 0
             for event in self.cranes[index].queue_evolution:
                 minute = int(event[0] / 60)
@@ -45,11 +45,24 @@ class Simulator:
         for i in range(24):
             for j in range(24 * 60):
                 total_trucks_in_queue[0][j] += queue_matrix[i][j]
+        collapsed_matrix = []
+        for crane in range(self.simulation.n_cranes):
+            collapsed_matrix.append([])
+            for i in range(24):
+                suma = 0
+                for j in range(60):
+                    index = i*24 + j
+                    suma += queue_matrix[crane][index]
+                collapsed_matrix[crane][i] = suma // 60
+
+
+
+
 
         self.simulation.mean_time = Decimal(sum(self.waited_time_for_truck) / len(self.waited_time_for_truck))
         self.simulation.percent_trucks_in_queue = len(self.waited_time_for_truck) // self.truck_counter
         self.simulation.max_time_in_queue = Decimal(max(self.waited_time_for_truck))
-        self.simulation.n_trucks_in_queue = json.dumps(queue_matrix.tolist())
+        self.simulation.n_trucks_in_queue = json.dumps(collapsed_matrix)
         self.simulation.save()
 
         np.savetxt('Queues.csv', queue_matrix, delimiter=';', fmt='%i')
