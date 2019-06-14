@@ -12,7 +12,8 @@ class SimulationsView(APIView):
 
     def post(self, request):
         serializer = SimulationModelInputSerializer(data=request.data)
-        serializer.is_valid()
+        if not serializer.is_valid():
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         simulation = serializer.save()
         simulator = Simulator(simulation)
         simulator.simulate()
@@ -23,5 +24,5 @@ class SimulationsView(APIView):
 class SimulationView(APIView):
     def get(self, request, id_simulation):
         simulation = get_object_or_404(SimulationModel, id=id_simulation)
-        serialized = SimulationModelResultsSerializer(simulation)
-        return Response(data=serialized.data, status=status.HTTP_200_OK)
+        serializer = SimulationModelResultsSerializer(simulation)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)

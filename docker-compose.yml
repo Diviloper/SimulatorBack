@@ -27,3 +27,10 @@ services:
       depends_on:
         - db
         - api_migrate
+
+  web:
+      image: web
+      ports:
+        - "80:80"
+      depends_on:
+        - api

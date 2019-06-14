@@ -11,7 +11,7 @@ class SimulationModel(models.Model):
     alpha_A = models.DecimalField(max_digits=7, decimal_places=5)
     beta_A = models.DecimalField(max_digits=7, decimal_places=5)
     n_cranes = models.IntegerField()
-    max_time = models.IntegerField()
+    seed = models.IntegerField()
     mean_time = models.DecimalField(max_digits=100, decimal_places=5, null=True, blank=True, default=0)
     percent_trucks_in_queue = models.DecimalField(max_digits=100, decimal_places=5, null=True, blank=True, default=0)
     max_time_in_queue = models.IntegerField(null=True, blank=True, default=0)
