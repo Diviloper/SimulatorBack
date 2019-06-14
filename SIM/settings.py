@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'pk7hs4&-ry(!l1-t)n4trjm&$sy6a32y3_rrlhn!0p(e52r-ic'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -72,7 +70,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'SIM.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -82,19 +79,18 @@ WSGI_APPLICATION = 'SIM.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-DATABASES={
-    'default':{
-        'ENGINE':'django.db.backends.postgresql_psycopg2',
-        'NAME':'SIM',
-        'USER':'postgres',
-        'PASSWORD':'',
-        'HOST':'localhost',
-        'PORT':'5432',
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'SIM',
+        'USER': 'postgres',
+        'PASSWORD': '123',
+        'HOST': 'localhost',
+        'PORT': '5432',
     },
-    'original':{
-        'ENGINE':'django.db.backends.sqlite3',
-        'NAME':os.path.join(BASE_DIR,'db.sqlite3')
-
+    'original': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
 
@@ -116,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -129,7 +124,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
