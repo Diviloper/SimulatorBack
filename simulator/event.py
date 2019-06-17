@@ -112,4 +112,4 @@ class Departure(Event):
         return current_time + np.random.lognormal(departure.mean, departure.sigma), departure
 
     def __repr__(self) -> str:
-        return 'Departure Event -> ' + super().__repr__() + f' Queue size: {self.simulator.cranes[self.truck.crane].queue.qsize()}'
+        return 'Departure Event -> ' + super().__repr__() + f' Queue {self.truck.crane} size: {self.simulator.cranes[self.truck.crane].queue.qsize()}'

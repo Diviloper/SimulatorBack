@@ -1,7 +1,10 @@
 import json
+import os
 import queue
-import numpy as np
+import tarfile
 from decimal import Decimal
+
+from django.core.files import File
 
 from simulator.crane import Crane
 from simulator.event import *
@@ -18,16 +21,19 @@ class Simulator:
         self.truck_counter = 0
 
     def simulate(self):
+        trace = []
         cua = queue.PriorityQueue()
         cua.put(Arrival.generate(0.0, Truck(0), self))
         current_time = 0.0
         max_time = 84400.0
-        while current_time < max_time:
-            current_event = cua.get()
-            current_time = current_event[0]
-            for event in current_event[1].generate_next(current_time):
-                cua.put(event)
-            print(current_event)
+        with open('Traca.txt', 'w') as file:
+            while current_time < max_time:
+                current_event = cua.get()
+                current_time = current_event[0]
+                for event in current_event[1].generate_next(current_time):
+                    cua.put(event)
+                print(current_event)
+                file.write(f'{current_event[0]} : {current_event[1]}\n')
         queue_matrix = np.zeros((self.simulation.n_cranes, 24 * 60), dtype=np.int)
         total_trucks_in_queue = np.zeros((1, 24 * 60), dtype=np.int)
         for index in range(self.simulation.n_cranes):
@@ -52,9 +58,9 @@ class Simulator:
             for i in range(24):
                 suma = 0
                 for j in range(60):
-                    index = i*24 + j
+                    index = i * 24 + j
                     suma += queue_matrix[crane][index]
-                collapsed_matrix[crane][i] = (suma // 60)
+                collapsed_matrix[crane][i] = suma // 60
 
         self.simulation.mean_time = Decimal(sum(self.waited_time_for_truck) / len(self.waited_time_for_truck))
         self.simulation.percent_trucks_in_queue = (len(self.waited_time_for_truck) * 100) // self.truck_counter
@@ -62,6 +68,30 @@ class Simulator:
         self.simulation.n_trucks_in_queue = json.dumps(collapsed_matrix.tolist())
         self.simulation.save()
 
-        np.savetxt('Queues.csv', queue_matrix, delimiter=';', fmt='%i')
-        np.savetxt('TotalWaitingTrucks.csv', total_trucks_in_queue, delimiter=';', fmt='%i')
-        np.savetxt('WaitedTimeInQueue.csv', self.waited_time_for_truck, delimiter=';', fmt='%i')
+        dades = [
+            f'Llavor: {self.simulation.seed}',
+            f'Nombre de grues: {self.simulation.n_cranes} grues',
+            f'Nombre de camions: {self.truck_counter} camions',
+            f'Nombre de camions encuats: {len(self.waited_time_for_truck)} camions',
+            f'Percentatge de camions encuats: {self.simulation.percent_trucks_in_queue}%',
+            f'Temps mig esperat: {self.simulation.mean_time}s',
+            f'Temps màxim esperat: {self.simulation.max_time_in_queue}s',
+        ]
+
+        np.savetxt('CuesPerMinut.csv', queue_matrix, delimiter=';', fmt='%i')
+        np.savetxt('CamionsEsperantPerMinut.csv', total_trucks_in_queue, delimiter=';', fmt='%i')
+        np.savetxt('TempsEsperatPerCamio.csv', self.waited_time_for_truck, delimiter=';', fmt='%i')
+        np.savetxt('DadesResultat.csv', dades, fmt='%s', delimiter='\n')
+
+        with tarfile.open(f'Compressed{self.simulation.id}.tar', 'w') as handle_tar:
+            handle_tar.add('CuesPerMinut.csv')
+            handle_tar.add('CamionsEsperantPerMinut.csv')
+            handle_tar.add('TempsEsperatPerCamio.csv')
+            handle_tar.add('DadesResultat.csv')
+            handle_tar.add('Traca.txt')
+
+        os.remove('CuesPerMinut.csv')
+        os.remove('CamionsEsperantPerMinut.csv')
+        os.remove('TempsEsperatPerCamio.csv')
+        os.remove('DadesResultat.csv')
+        os.remove('Traca.txt')

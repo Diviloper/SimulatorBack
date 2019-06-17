@@ -1,3 +1,7 @@
+import os
+
+from django.core.files import File
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -26,3 +30,13 @@ class SimulationView(APIView):
         simulation = get_object_or_404(SimulationModel, id=id_simulation)
         serializer = SimulationModelResultsSerializer(simulation)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class DownloadSimulationView(APIView):
+    def get(self, request, id_simulation):
+        path_to_file = os.path.realpath(f'Compressed{id_simulation}.tar')
+        f = open(path_to_file, 'r')
+        myfile = File(f)
+        response = HttpResponse(myfile, content_type='application/gzip')
+        response['Content-Disposition'] = f'attachment; filename=Compressed{id_simulation}.tar.gz'
+        return response
